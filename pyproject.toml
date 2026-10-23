@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scamshield-ai"
+version = "0.1.0"
+description = "Explainable safety analysis and MCP tools for suspicious messages and URLs."
+requires-python = ">=3.11"
+readme = "README.md"
+license = { file = "LICENSE" }
+keywords = ["mcp", "security", "scam", "phishing", "fastapi", "bedrock"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Security",
+]
+dependencies = [
+    "boto3>=1.35,<2",
+    "fastapi>=0.115,<1",
+    "httpx>=0.27,<1",
+    "mcp>=2.0,<3",
+    "pydantic>=2.0,<3",
+    "uvicorn[standard]>=0.30,<1",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+]
+
+[project.scripts]
+scamshield-mcp = "scamshield.mcp_server:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.setuptools.packages.find]
+include = ["scamshield*"]

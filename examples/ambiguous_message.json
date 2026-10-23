@@ -1,0 +1,10 @@
+{
+  "input": {
+    "message": "Your delivery update is available at https://carrier.example/track."
+  },
+  "expected_interpretation": "inconclusive",
+  "notes": [
+    "The URL should be investigated before opening.",
+    "An inconclusive result is not a safety guarantee."
+  ]
+}

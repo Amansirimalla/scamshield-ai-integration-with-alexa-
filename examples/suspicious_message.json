@@ -1,0 +1,10 @@
+{
+  "input": {
+    "message": "Your bank account will be blocked today. Verify now at https://example.example/secure and reply with your OTP."
+  },
+  "expected_interpretation": "suspicious",
+  "notes": [
+    "The URL still requires independent reputation checking.",
+    "The local analyzer provides preliminary indicators, not proof of fraud."
+  ]
+}

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07111f" />
+    <meta name="description" content="ScamShield AI helps you investigate suspicious messages and links without pretending certainty." />
+    <title>ScamShield AI — Online safety, explained</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient ambient-one" aria-hidden="true"></div>
+    <div class="ambient ambient-two" aria-hidden="true"></div>
+    <div class="app-shell">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="ScamShield AI home">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span><strong>ScamShield</strong><small>AI safety assistant</small></span>
+        </a>
+        <nav class="header-nav" id="primary-nav" aria-label="Primary navigation">
+          <a href="#how-it-works">How it works</a>
+          <a href="#privacy">Privacy</a>
+          <a class="header-button" href="#investigate">Investigate <span>↗</span></a>
+        </nav>
+        <button class="mobile-menu" id="mobile-menu" aria-label="Open navigation" aria-expanded="false" aria-controls="primary-nav">☰</button>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div class="hero-copy">
+            <div class="status-pill"><span></span> Calm, evidence-led protection</div>
+            <h1>Before you click,<br /><em>ask why.</em></h1>
+            <p>ScamShield helps you slow down and understand suspicious messages, job offers, payment requests, and links — without pretending certainty.</p>
+            <div class="hero-actions">
+              <a class="primary-button" href="#investigate">Investigate a message <span>→</span></a>
+              <a class="text-button" href="#how-it-works">See how it works <span>↓</span></a>
+            </div>
+            <div class="hero-trust"><span class="trust-icon">✓</span><span><strong>No storage by default</strong> The app does not persist it by default; optional providers may receive limited data.</span></div>
+          </div>
+          <div class="hero-visual" aria-label="Illustration of evidence-led analysis">
+            <div class="orb orb-large"></div><div class="orb orb-small"></div>
+            <div class="signal-card signal-card-top"><span class="signal-dot violet"></span><span>Evidence first</span><b>01</b></div>
+            <div class="shield-illustration"><div class="shield-glow"></div><div class="shield-shape"><span class="shield-check">✓</span></div><div class="orbit orbit-a"></div><div class="orbit orbit-b"></div></div>
+            <div class="signal-card signal-card-bottom"><span class="signal-dot green"></span><span>Uncertainty shown</span><b>02</b></div>
+          </div>
+        </section>
+
+        <section class="investigate-section" id="investigate">
+          <div class="section-heading">
+            <div><p class="kicker">01 / Investigate</p><h2>What feels off?</h2><p>Paste the message exactly as you received it. Add a link only if one was included.</p></div>
+            <div class="demo-controls"><span>Need a starting point?</span><button id="load-demo" type="button">Use a labeled demo <span>↗</span></button></div>
+          </div>
+
+          <div class="investigation-layout">
+            <form class="analysis-form panel" id="analysis-form">
+              <div class="panel-topline"><span class="panel-number">A</span><div><h3>Message analysis</h3><p>We look for explainable signals, not definitive labels.</p></div><span class="required-label">Required</span></div>
+              <label class="field-label" for="message-input">Suspicious message <span>*</span></label>
+              <textarea id="message-input" maxlength="10000" required placeholder="Paste the message here…&#10;&#10;Tip: remove passwords, OTPs, and private account numbers first."></textarea>
+              <div class="field-meta"><span id="message-count">0 / 10,000</span><span>Do not include passwords or verification codes.</span></div>
+              <div class="url-field">
+                <label class="field-label" for="url-input">Link to investigate <span class="optional-label">Optional</span></label>
+                <div class="input-wrap"><span class="url-prefix">https://</span><input id="url-input" type="url" inputmode="url" placeholder="Paste a URL without opening it" maxlength="2048" /></div>
+                <p class="field-help">ScamShield never opens or downloads the link. Reputation checks may be unavailable.</p>
+              </div>
+              <div class="form-footer"><div class="privacy-mini"><span>◉</span><span>Not persisted by default<br /><b>Optional providers may receive limited data</b></span></div><button class="analyze-button" id="analyze-button" type="submit" aria-label="Analyze safely"><span class="button-label">Analyze safely</span><span class="button-spinner" aria-hidden="true"></span><span aria-hidden="true">→</span></button></div>
+              <div class="form-error" id="form-error" role="alert" hidden></div>
+            </form>
+
+            <aside class="results-panel panel" aria-live="polite" id="results-panel">
+              <div class="empty-state" id="empty-state">
+                <div class="empty-icon"><span>⌁</span></div>
+                <p class="kicker">Your results appear here</p>
+                <h3>Clarity over certainty</h3>
+                <p>We’ll show what was observed, what it could mean, and what you can verify next.</p>
+                <div class="empty-rule"><span></span><span></span><span></span></div>
+              </div>
+              <div class="results-content" id="results-content" hidden>
+                <div class="results-header"><div><p class="kicker">02 / Findings</p><h3 id="result-title">Investigation result</h3></div><span class="status-badge" id="result-status">Inconclusive</span></div>
+                <p class="result-summary" id="result-summary"></p>
+                <div class="result-meta"><span id="result-count"></span><span id="result-time"></span></div>
+                <div class="result-section"><div class="subheading"><span>Observed signals</span><b id="finding-count">0</b></div><div class="evidence-list" id="evidence-list"></div></div>
+                <div class="verification-box" id="verification-box"><div class="verification-icon">⌁</div><div><strong>Verification status</strong><p id="verification-text">No external verification has been run.</p></div></div>
+                <div class="next-steps"><div class="subheading"><span>Safer next steps</span></div><ol id="next-steps-list"></ol></div>
+                <div class="limitations" id="limitations"></div>
+                <button class="reset-button" id="reset-button" type="button">Start another investigation <span>↗</span></button>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="follow-up-section" id="how-it-works">
+          <div class="follow-up-copy"><p class="kicker">03 / Keep asking</p><h2>Still unsure?<br /><em>That’s okay.</em></h2><p>Share a follow-up question after your investigation. Good safety guidance makes room for what it doesn’t know.</p></div>
+          <div class="follow-up-card panel"><div class="follow-up-top"><span class="assistant-avatar">✦</span><div><strong>Ask Shield</strong><span>Uses the current result only</span></div></div><div class="follow-up-messages" id="follow-up-messages" role="status" aria-live="polite" aria-relevant="additions text"><p class="follow-up-placeholder">Your follow-up conversation will appear here after an analysis.</p></div><form class="follow-up-form" id="follow-up-form" aria-busy="false"><label class="sr-only" for="follow-up-input">Ask a follow-up question</label><input id="follow-up-input" placeholder="Ask what to do next…" aria-describedby="follow-up-messages" disabled /><button type="submit" aria-label="Send follow-up" disabled>→</button></form></div>
+        </section>
+
+        <section class="privacy-section" id="privacy">
+          <div class="privacy-icon">◉</div><div><p class="kicker">A note on privacy</p><h2>Your uncertainty is yours.</h2><p>ScamShield does not persist submitted messages by default. Avoid sharing passwords, one-time codes, card numbers, or other secrets. If optional Bedrock or reputation integrations are enabled, limited submitted data is sent to those providers. Messages are analyzed to give you guidance, not to prove who sent them.</p></div><span class="disclaimer">No tool can guarantee fraud detection.</span>
+        </section>
+      </main>
+      <footer class="site-footer"><span>© 2026 ScamShield AI</span><span>Built for safer decisions online <b>•</b> <a href="#privacy">Privacy by default</a></span></footer>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

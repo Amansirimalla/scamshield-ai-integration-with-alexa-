@@ -1,0 +1,11 @@
+{
+  "analyze_message": {
+    "message": "Your account will be blocked today. Verify at https://example.example/login."
+  },
+  "check_url_reputation": {
+    "url": "https://example.example/login"
+  },
+  "get_safety_guidance": {
+    "category": "phishing_message"
+  }
+}
