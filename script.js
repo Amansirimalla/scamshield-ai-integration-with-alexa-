@@ -10,7 +10,8 @@ const resultsContent = document.querySelector("#results-content");
 const followUpForm = document.querySelector("#follow-up-form");
 const followUpInput = document.querySelector("#follow-up-input");
 const followUpMessages = document.querySelector("#follow-up-messages");
-let latestInvestigation = null;
+const analysisStatus = document.querySelector("#analysis-status");
+const demoStatus = document.querySelector("#demo-status");
 let latestInvestigationToken = null;
 let followUpAvailable = false;
 
@@ -21,7 +22,13 @@ function setLoading(loading) {
   analyzeButton.disabled = loading;
   analyzeButton.classList.toggle("is-loading", loading);
   analyzeButton.setAttribute("aria-busy", String(loading));
-  analyzeButton.setAttribute("aria-label", loading ? "Analyzing message" : "Analyze safely");
+  analyzeButton.setAttribute("aria-label", loading ? "Analyzing message" : "Analyze message");
+}
+
+function setAnalysisStatus(message, state = "") {
+  analysisStatus.textContent = message;
+  analysisStatus.hidden = !message;
+  analysisStatus.className = `analysis-status${state ? ` is-${state}` : ""}`;
 }
 
 function showError(message) {
@@ -91,11 +98,11 @@ function renderResults(result) {
   statusElement.textContent = statusLabel(status);
   statusElement.className = `status-badge ${status}`;
   document.querySelector("#result-title").textContent = status === "suspicious" ? "Pause before acting" : "No clear conclusion";
-  document.querySelector("#result-summary").textContent = result.explanation?.assessment || (status === "suspicious"
+  const assessment = result.explanation?.assessment;
+  document.querySelector("#result-summary").textContent = (typeof assessment === "string" && assessment.trim()) ? assessment : (status === "suspicious"
     ? "The available checks found warning signs worth verifying independently."
     : "The available checks do not provide enough evidence for a strong conclusion.");
   document.querySelector("#result-count").textContent = `${findings.length} signal${findings.length === 1 ? "" : "s"} observed`;
-  document.querySelector("#result-time").textContent = "Just now";
   document.querySelector("#finding-count").textContent = findings.length;
   const evidenceList = document.querySelector("#evidence-list");
   evidenceList.replaceChildren();
@@ -109,10 +116,14 @@ function renderResults(result) {
       const icon = textElement("span", "evidence-icon", iconFor(indicator));
       icon.setAttribute("aria-hidden", "true");
       heading.append(icon, textElement("strong", "", indicator.replaceAll("_", " ")));
-      heading.append(textElement("span", "severity", finding.severity || "relevant"));
+      if (typeof finding.severity === "string" && finding.severity.trim()) {
+        heading.append(textElement("span", "severity", finding.severity));
+      }
       card.append(heading);
       if (finding.supporting_text) card.append(textElement("blockquote", "", `“${finding.supporting_text}”`));
-      card.append(textElement("p", "", finding.explanation || "This signal should be verified independently."));
+      if (typeof finding.explanation === "string" && finding.explanation.trim()) {
+        card.append(textElement("p", "", finding.explanation));
+      }
       if (finding.recommended_verification) {
         card.append(textElement("p", "verify-line", finding.recommended_verification));
       }
@@ -126,23 +137,23 @@ function renderResults(result) {
     ? result.explanation.recommended_next_steps
     : (Array.isArray(result.recommendations) ? result.recommendations : []);
   const usableSteps = providedSteps.filter((step) => typeof step === "string" && step.trim());
-  const steps = usableSteps.length ? usableSteps : [
-    "Do not click links or share sensitive information until the sender is verified.",
-    "Contact the organization through an official app, website, or trusted phone number."
-  ];
-  replaceTextList(document.querySelector("#next-steps-list"), steps);
+  const nextSteps = document.querySelector("#next-steps-list");
+  if (usableSteps.length) {
+    replaceTextList(nextSteps, usableSteps);
+  } else {
+    nextSteps.replaceChildren(textElement("li", "no-next-steps", "No additional next steps were returned for this result."));
+  }
   const limitations = Array.isArray(result.limitations)
     ? result.limitations.filter((item) => typeof item === "string" && item.trim())
     : ["This is a preliminary analysis and cannot guarantee fraud detection."];
   const uncertainty = result.explanation?.uncertainty_explanation;
-  if (typeof uncertainty === "string" && uncertainty.trim()) {
-    limitations.push(`What remains uncertain: ${uncertainty}`);
-  }
+  const uncertaintyElement = document.querySelector("#result-uncertainty");
+  uncertaintyElement.hidden = typeof uncertainty !== "string" || !uncertainty.trim();
+  uncertaintyElement.textContent = uncertaintyElement.hidden ? "" : `Uncertainty: ${uncertainty}`;
   replaceTextList(document.querySelector("#limitations"), limitations, "p");
   emptyState.hidden = true;
   resultsContent.hidden = false;
   const bedrockUnavailable = limitations.some((item) => item.startsWith("Amazon Bedrock is not configured;"));
-  latestInvestigation = result;
   latestInvestigationToken = result._follow_up_token || null;
   setFollowUpAvailability(
     !bedrockUnavailable,
@@ -155,13 +166,20 @@ function renderResults(result) {
 async function analyze(event) {
   event.preventDefault();
   clearError();
+  demoStatus.hidden = true;
   const message = messageInput.value.trim();
   const url = urlInput.value.trim();
   if (!message) {
+    setAnalysisStatus("");
     showError("Paste the message you want to investigate first.");
     messageInput.focus();
     return;
   }
+  resultsContent.hidden = true;
+  emptyState.hidden = false;
+  latestInvestigationToken = null;
+  setFollowUpAvailability(false, "Follow-up is available after an analysis when Bedrock is configured.");
+  setAnalysisStatus("Analyzing message and any supplied link…", "loading");
   setLoading(true);
   try {
     const response = await fetch(`${API_BASE}/api/investigate`, {
@@ -175,8 +193,10 @@ async function analyze(event) {
       throw new Error(apiMessage || "The analysis service could not complete the request.");
     }
     renderResults(payload.result);
+    setAnalysisStatus("Analysis complete. Review the assessment, evidence, and next steps.", "success");
     resultsPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
   } catch (error) {
+    setAnalysisStatus("");
     showError(error instanceof TypeError
       ? "Could not reach ScamShield. Check that the FastAPI backend is running, then retry."
       : (error.message || "The analysis could not be completed. Please retry."));
@@ -247,10 +267,12 @@ document.querySelector("#load-demo").addEventListener("click", () => {
   urlInput.value = demoUrl;
   messageInput.dispatchEvent(new Event("input"));
   messageInput.focus();
-  showError("Demo input loaded. It is clearly labeled as a sample; press Analyze safely to send it to the backend.");
+  clearError();
+  setAnalysisStatus("");
+  demoStatus.textContent = "Synthetic example loaded. Review it, then select Analyze message.";
+  demoStatus.hidden = false;
 });
 document.querySelector("#reset-button").addEventListener("click", () => {
-  latestInvestigation = null;
   latestInvestigationToken = null;
   resultsContent.hidden = true;
   emptyState.hidden = false;

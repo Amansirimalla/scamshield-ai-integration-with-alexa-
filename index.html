@@ -31,7 +31,7 @@
       <main id="top">
         <section class="hero">
           <div class="hero-copy">
-            <div class="status-pill"><span></span> Calm, evidence-led protection</div>
+            <div class="status-pill"><span></span> Evidence → Explanation → Action</div>
             <h1>Before you click,<br /><em>ask why.</em></h1>
             <p>ScamShield helps you slow down and understand suspicious messages, job offers, payment requests, and links — without pretending certainty.</p>
             <div class="hero-actions">
@@ -50,22 +50,23 @@
 
         <section class="investigate-section" id="investigate">
           <div class="section-heading">
-            <div><p class="kicker">01 / Investigate</p><h2>What feels off?</h2><p>Paste the message exactly as you received it. Add a link only if one was included.</p></div>
-            <div class="demo-controls"><span>Need a starting point?</span><button id="load-demo" type="button">Use a labeled demo <span>↗</span></button></div>
+            <div><p class="kicker">01 / Investigate</p><h2>What feels off?</h2><p>Paste a suspicious message to review its warning signs. Add a link only if one was included.</p></div>
+            <div class="demo-controls"><div><strong>Synthetic example</strong><span>Fictional content. No real personal information.</span></div><button id="load-demo" type="button">Load example <span>↗</span></button><p id="demo-status" class="demo-status" role="status" aria-live="polite" hidden></p></div>
           </div>
 
           <div class="investigation-layout">
             <form class="analysis-form panel" id="analysis-form">
               <div class="panel-topline"><span class="panel-number">A</span><div><h3>Message analysis</h3><p>We look for explainable signals, not definitive labels.</p></div><span class="required-label">Required</span></div>
-              <label class="field-label" for="message-input">Suspicious message <span>*</span></label>
-              <textarea id="message-input" maxlength="10000" required placeholder="Paste the message here…&#10;&#10;Tip: remove passwords, OTPs, and private account numbers first."></textarea>
-              <div class="field-meta"><span id="message-count">0 / 10,000</span><span>Do not include passwords or verification codes.</span></div>
+              <label class="field-label" for="message-input">Message to investigate <span>*</span></label>
+              <textarea id="message-input" maxlength="10000" required aria-describedby="message-help message-count" placeholder="Paste the suspicious message here…"></textarea>
+              <div class="field-meta"><span id="message-count">0 / 10,000</span><span id="message-help">Remove passwords, OTPs, and private account details first.</span></div>
               <div class="url-field">
                 <label class="field-label" for="url-input">Link to investigate <span class="optional-label">Optional</span></label>
                 <div class="input-wrap"><span class="url-prefix">https://</span><input id="url-input" type="url" inputmode="url" placeholder="Paste a URL without opening it" maxlength="2048" /></div>
                 <p class="field-help">ScamShield never opens or downloads the link. Reputation checks may be unavailable.</p>
               </div>
-              <div class="form-footer"><div class="privacy-mini"><span>◉</span><span>Not persisted by default<br /><b>Optional providers may receive limited data</b></span></div><button class="analyze-button" id="analyze-button" type="submit" aria-label="Analyze safely"><span class="button-label">Analyze safely</span><span class="button-spinner" aria-hidden="true"></span><span aria-hidden="true">→</span></button></div>
+              <div class="form-footer"><div class="privacy-mini"><span>◉</span><span>Not persisted by default<br /><b>Optional providers may receive limited data</b></span></div><button class="analyze-button" id="analyze-button" type="submit" aria-label="Analyze message"><span class="button-label">Analyze message</span><span class="button-spinner" aria-hidden="true"></span><span aria-hidden="true">→</span></button></div>
+              <p class="analysis-status" id="analysis-status" role="status" aria-live="polite" hidden></p>
               <div class="form-error" id="form-error" role="alert" hidden></div>
             </form>
 
@@ -78,12 +79,13 @@
                 <div class="empty-rule"><span></span><span></span><span></span></div>
               </div>
               <div class="results-content" id="results-content" hidden>
-                <div class="results-header"><div><p class="kicker">02 / Findings</p><h3 id="result-title">Investigation result</h3></div><span class="status-badge" id="result-status">Inconclusive</span></div>
+                <div class="results-header"><div><p class="kicker">02 / Assessment</p><h3 id="result-title">Investigation result</h3></div><span class="status-badge" id="result-status">Inconclusive</span></div>
                 <p class="result-summary" id="result-summary"></p>
-                <div class="result-meta"><span id="result-count"></span><span id="result-time"></span></div>
-                <div class="result-section"><div class="subheading"><span>Observed signals</span><b id="finding-count">0</b></div><div class="evidence-list" id="evidence-list"></div></div>
+                <p class="result-uncertainty" id="result-uncertainty" hidden></p>
+                <div class="result-meta"><span id="result-count"></span></div>
+                <div class="result-section"><div class="subheading"><span>Evidence</span><b id="finding-count">0</b></div><div class="evidence-list" id="evidence-list"></div></div>
                 <div class="verification-box" id="verification-box"><div class="verification-icon">⌁</div><div><strong>Verification status</strong><p id="verification-text">No external verification has been run.</p></div></div>
-                <div class="next-steps"><div class="subheading"><span>Safer next steps</span></div><ol id="next-steps-list"></ol></div>
+                <div class="next-steps"><div class="subheading"><span>What you can do next</span></div><ol id="next-steps-list"></ol></div>
                 <div class="limitations" id="limitations"></div>
                 <button class="reset-button" id="reset-button" type="button">Start another investigation <span>↗</span></button>
               </div>
